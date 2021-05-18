@@ -46,4 +46,16 @@ Rails.application.routes.draw do
 
   get("/user_sign_up", { :controller => "users", :action => "new_registration_form"})
 
+  #SIGN OUT
+
+  get("/user_sign_out", { :controller => "users", :action => "remove_cookies"})
+
+  #SIGN IN
+
+  get("/user_sign_in", { :controller => "users", :action => "new_session_form"})
+
+  #VERIFY CREDENTIALS
+  
+  post("/verify_credentials", { :controller => "users", :action => "authenticate"})
+
 end

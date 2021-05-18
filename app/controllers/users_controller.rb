@@ -22,6 +22,7 @@ class UsersController < ApplicationController
     save_status = user.save
 
     if save_status == true
+      session.store(:user_id, user.id)
       redirect_to("/users/#{user.username}", { :notice => "Welcome, " + user.username + "!"})
     else
       redirect_to("/user_sign_up", { :alert => user.errors.full_messages.to_sentence })
@@ -52,8 +53,32 @@ class UsersController < ApplicationController
 
   def new_registration_form
 
+    un = params.fetch("input_username")
+    pw = params.fetch("input_password")
+
+    the_user = User.where({:username => un}).at(0)
+
+    if the_user == nil
+      redirect_to("/user_sign_in", {:alert => "Username does not exist"})
+    else
+      redirect_to()
+    end
+
     render({ :template => "users/signup_form.html.erb"})
 
+  end
+
+  def remove_cookies
+    reset_session
+    redirect_to("/", { :notice => "See ya later!"})
+  end
+
+  def new_session_form
+    render({ :template => "users/signin_form.html.erb"})
+  end
+
+  def authenticate
+    render({ :plain => "hi" })
   end
 
 end
