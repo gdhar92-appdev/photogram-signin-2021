@@ -52,18 +52,7 @@ class UsersController < ApplicationController
   end
 
   def new_registration_form
-
-    un = params.fetch("input_username")
-    pw = params.fetch("input_password")
-
-    the_user = User.where({:username => un}).at(0)
-
-    if the_user == nil
-      redirect_to("/user_sign_in", {:alert => "Username does not exist"})
-    else
-      redirect_to()
-    end
-
+    
     render({ :template => "users/signup_form.html.erb"})
 
   end
@@ -78,7 +67,22 @@ class UsersController < ApplicationController
   end
 
   def authenticate
-    render({ :plain => "hi" })
+    un = params.fetch("input_username")
+    pw = params.fetch("input_password")
+
+    the_user = User.where({:username => un}).at(0)
+
+    if the_user == nil
+      redirect_to("/user_sign_in", {:alert => "Username does not exist"})
+    else
+      if the_user.authenticate(pw)
+        session.store(:user_id, the_user.id)
+        redirect_to("/", {:notice => "Welcome back, " + the_user.username + "!"})
+      else
+        redirect_to("/user_sign_in", {:alert => "Incorrect Password"})
+      end
+    end
+    
   end
 
 end
